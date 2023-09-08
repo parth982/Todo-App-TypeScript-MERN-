@@ -25,17 +25,12 @@ const getTodoById = async (req, res) => {
 
 const addTodo = async (req, res) => {
   try {
-    const { title, description } = req.body;
-    const newTodo = {
-      title,
-      description,
-    };
-    const newTodoItem = await TodoModel.create(newTodo);
+    const newTodoItem = await TodoModel.create(req.body);
     res.status(201).json(newTodoItem);
   } catch (err) {
     res
       .status(500)
-      .json({ error: "An error occurred while creating the todo." });
+      .json({ error: "An error occurred while creating the todo.", err });
   }
 };
 
