@@ -8,18 +8,25 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import axios from "axios";
-import { FormEvent, useRef } from "react";
+import { FormEvent, useRef, useContext } from "react";
 import { todosInterface } from "../../interfaces";
+import { TodosContext } from "../../Context/todos.provider";
 
 const TodoForm = () => {
   const toast = useToast();
   const labelRef = useRef<HTMLInputElement>(null);
   const descRef = useRef<HTMLInputElement>(null);
-  const todo: todosInterface = { label: "", description: "" }; // Initialize todo object
+  const { dispatch } = useContext(TodosContext);
 
   const addTodo = async (todoData: todosInterface) => {
     try {
-      await axios.post<todosInterface>("http://localhost:4000/todos", todoData);
+      const response = await axios.post<todosInterface>(
+        "http://localhost:4000/todos",
+        todoData
+      );
+
+      dispatch({ type: "setTodo", todoItem: response.data });
+
       toast({
         title: "Todo Task Added",
         status: "success",
@@ -27,6 +34,10 @@ const TodoForm = () => {
         isClosable: true,
         position: "bottom",
       });
+
+      // Clear the input fields
+      if (labelRef.current) labelRef.current.value = "";
+      if (descRef.current) descRef.current.value = "";
     } catch (error) {
       // Handle errors
       console.error(error);
@@ -35,10 +46,17 @@ const TodoForm = () => {
 
   const submitHandler = (e: FormEvent) => {
     e.preventDefault();
-    if (labelRef.current !== null) todo.label = labelRef.current.value;
-    if (descRef.current !== null) todo.description = descRef.current.value;
-    console.log(todo);
-    addTodo(todo);
+    const labelValue = labelRef.current?.value;
+    const descValue = descRef.current?.value;
+
+    if (labelValue && descValue) {
+      const newTodo = {
+        label: labelValue,
+        description: descValue,
+      };
+
+      addTodo(newTodo);
+    }
   };
 
   return (
