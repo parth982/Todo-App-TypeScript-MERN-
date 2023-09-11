@@ -8,9 +8,9 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import axios from "axios";
-import { FormEvent, useRef, useContext } from "react";
-import { todosInterface } from "../../interfaces";
+import { FormEvent, useContext, useRef } from "react";
 import { TodosContext } from "../../Context/todos.provider";
+import { ITodo } from "../../interfaces";
 
 const TodoForm = () => {
   const toast = useToast();
@@ -18,14 +18,19 @@ const TodoForm = () => {
   const descRef = useRef<HTMLInputElement>(null);
   const { dispatch } = useContext(TodosContext);
 
-  const addTodo = async (todoData: todosInterface) => {
+  interface IsTodo {
+    label: string;
+    description: string;
+  }
+
+  const addTodo = async (todoData: IsTodo) => {
     try {
-      const response = await axios.post<todosInterface>(
+      const response = await axios.post<ITodo>(
         "http://localhost:4000/todos",
         todoData
       );
 
-      dispatch({ type: "setTodo", todoItem: response.data });
+      dispatch({ type: "addTodo", todoItem: response.data });
 
       toast({
         title: "Todo Task Added",
@@ -35,11 +40,9 @@ const TodoForm = () => {
         position: "bottom",
       });
 
-      // Clear the input fields
       if (labelRef.current) labelRef.current.value = "";
       if (descRef.current) descRef.current.value = "";
     } catch (error) {
-      // Handle errors
       console.error(error);
     }
   };

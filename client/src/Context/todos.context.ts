@@ -1,9 +1,9 @@
 import { Dispatch, createContext } from "react";
-import { todosInterface as td } from "../interfaces";
-import { TodoAction } from "./todoReducer";
+import { ITodo } from "../interfaces";
+import { TodoAction } from "./todos.reducer";
 
 interface TodoContextType {
-    todos: td[];
+    todos: ITodo[];
     dispatch: Dispatch<TodoAction>;
 }
 const TodosContext = createContext<TodoContextType>(

@@ -1,28 +1,40 @@
-import axios from "axios";
 import { useContext, useEffect } from "react";
-import { Box, Flex, Text } from "@chakra-ui/react"; // Import Chakra UI components
 import { TodosContext } from "../../Context/todos.provider";
-import { todosInterface } from "../../interfaces";
+import { ITodo } from "../../interfaces";
+import TodoItem from "../todo-item/TodoItem";
+import { Box, Flex } from "@chakra-ui/react";
+import axios from "axios";
 
 const TodoList = () => {
   const { todos, dispatch } = useContext(TodosContext);
 
   useEffect(() => {
     getAllTodos();
-  }, [todos]);
+  }, []);
 
-  const getAllTodos = async () => {
-    try {
-      const res = await axios.get("http://localhost:4000/todos");
-      dispatch({ type: "setTodos", todos: res.data });
-    } catch (error) {
-      console.error(error);
-    }
+  const getAllTodos = () => {
+    axios
+      .get("http://localhost:4000/todos")
+      .then((res) => {
+        dispatch({ type: "setTodos", todos: res.data });
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  const deleteTodo = (id: string) => {
+    axios
+      .delete("http://localhost:4000/todos/" + id)
+      .then(() => {
+        dispatch({ type: "delTodo", id: id });
+      })
+      .catch((err) => console.log(err));
   };
 
   return (
     <Box mt="10px">
-      {todos.map((todo: todosInterface) => (
+      {todos.map((todo: ITodo) => (
         <Flex
           key={todo._id + todo.description}
           flexDirection="row"
@@ -34,13 +46,7 @@ const TodoList = () => {
           borderWidth="1px"
           borderColor="gray.300"
         >
-          <Box>
-            <Text fontWeight="bold">Label:</Text> {todo.label}
-          </Box>
-          <Box>
-            <Text fontWeight="bold">Description:</Text>
-            {todo.description}
-          </Box>
+          <TodoItem todo={todo} deleteTodo={deleteTodo} />
         </Flex>
       ))}
     </Box>

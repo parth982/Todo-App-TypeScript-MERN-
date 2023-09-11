@@ -1,5 +1,5 @@
-export interface todosInterface {
-    _id?: string;
+export interface ITodo {
+    _id: string;
     label: string;
     description: string;
 }
