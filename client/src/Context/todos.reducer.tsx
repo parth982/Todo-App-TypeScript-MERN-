@@ -15,7 +15,12 @@ interface DelTodo {
   id: string;
 }
 
-export type TodoAction = AddTodo | SetTodos | DelTodo;
+interface CheckedTodo {
+  type: "checkedTodo";
+  id: string;
+}
+
+export type TodoAction = AddTodo | SetTodos | DelTodo | CheckedTodo;
 
 const todoReducer = (state: ITodo[], action: TodoAction) => {
   switch (action.type) {
@@ -26,6 +31,11 @@ const todoReducer = (state: ITodo[], action: TodoAction) => {
       return action.todos;
     case "delTodo":
       return state.filter((todo) => todo._id !== action.id);
+    case "checkedTodo":
+      return state.map((todo) => {
+        if (todo._id === action.id) return { ...todo, status: !todo.status };
+        return todo;
+      });
     default:
       return state;
   }

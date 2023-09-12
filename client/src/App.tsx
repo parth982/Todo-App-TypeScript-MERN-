@@ -5,8 +5,8 @@ import TodoList from "./components/todo-list/TodoList";
 const App = () => {
   return (
     <div>
-      <TodoForm />
       <TodoList />
+      <TodoForm />
       <TodoneList />
     </div>
   );

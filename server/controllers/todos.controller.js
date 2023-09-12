@@ -52,6 +52,22 @@ const updateTodoById = async (req, res) => {
   }
 };
 
+const toggleTodoStatus = async (req, res) => {
+  try {
+    const todoItem = await TodoModel.findById(req.params.id);
+    if (!todoItem) {
+      return res.status(404).json({ error: "Todo not found." });
+    }
+    todoItem.status = !todoItem.status;
+    const savedItem = await todoItem.save();
+    res.json(savedItem);
+  } catch (err) {
+    res
+      .status(500)
+      .json({ error: "An error occurred while updating the todo." });
+  }
+};
+
 const deleteTodoById = async (req, res) => {
   try {
     const result = await TodoModel.deleteOne({ _id: req.params.id });
@@ -72,4 +88,5 @@ module.exports = {
   addTodo,
   updateTodoById,
   deleteTodoById,
+  toggleTodoStatus,
 };

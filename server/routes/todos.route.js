@@ -6,6 +6,7 @@ const {
   addTodo,
   updateTodoById,
   deleteTodoById,
+  toggleTodoStatus,
 } = require("../controllers/todos.controller.js");
 
 router.route("/").get(getAllTodos).post(addTodo);
@@ -13,6 +14,7 @@ router
   .route("/:id")
   .get(getTodoById)
   .put(updateTodoById)
-  .delete(deleteTodoById);
+  .delete(deleteTodoById)
+  .patch(toggleTodoStatus);
 
 module.exports = router;

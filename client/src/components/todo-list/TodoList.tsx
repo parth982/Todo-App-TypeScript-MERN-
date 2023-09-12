@@ -2,7 +2,7 @@ import { useContext, useEffect } from "react";
 import { TodosContext } from "../../Context/todos.provider";
 import { ITodo } from "../../interfaces";
 import TodoItem from "../todo-item/TodoItem";
-import { Box, Flex } from "@chakra-ui/react";
+import { Box, Flex, Heading, Text } from "@chakra-ui/react";
 import axios from "axios";
 
 const TodoList = () => {
@@ -32,24 +32,35 @@ const TodoList = () => {
       .catch((err) => console.log(err));
   };
 
+  const remTodos = todos.filter((todo) => todo.status === false);
+
   return (
-    <Box mt="10px">
-      {todos.map((todo: ITodo) => (
-        <Flex
-          key={todo._id + todo.description}
-          flexDirection="row"
-          justifyContent="space-between"
-          maxWidth="300px"
-          margin="2px auto"
-          padding="10px"
-          borderRadius="4px"
-          borderWidth="1px"
-          borderColor="gray.300"
-        >
-          <TodoItem todo={todo} deleteTodo={deleteTodo} />
-        </Flex>
-      ))}
-    </Box>
+    <>
+      <Heading textAlign={"center"}>Task Lists</Heading>
+      <Box mt="10px">
+        {remTodos.length === 0 ? (
+          <Text textAlign={"center"} fontSize={"md"}>
+            No Tasks To do
+          </Text>
+        ) : (
+          remTodos.map((todo: ITodo) => (
+            <Flex
+              key={todo._id + todo.description}
+              flexDirection="row"
+              justifyContent="space-between"
+              maxWidth="70%"
+              margin="2px auto"
+              padding="10px"
+              borderRadius="4px"
+              borderWidth="1px"
+              borderColor="gray.300"
+            >
+              <TodoItem todo={todo} deleteTodo={deleteTodo} />
+            </Flex>
+          ))
+        )}
+      </Box>
+    </>
   );
 };
 

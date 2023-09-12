@@ -64,7 +64,6 @@ const TodoForm = () => {
 
   return (
     <Box textAlign={"center"} mt={5}>
-      <Heading>To-do App</Heading>
       <Box
         maxWidth={"70%"}
         mt={10}
