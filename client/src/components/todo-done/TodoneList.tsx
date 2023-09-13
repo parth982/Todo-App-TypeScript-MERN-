@@ -36,11 +36,11 @@ const TodoneList = () => {
   const doneTodos = todos.filter((todo) => todo.status === true);
 
   return (
-    <>
+    <Box my={10}>
       <Heading textAlign="center" mb={4} fontSize="3xl">
         Done Task Lists
       </Heading>
-      <SimpleGrid columns={1} spacing={4} mx="auto" maxW="lg">
+      <SimpleGrid columns={1} spacing={4} mx="auto" maxW="lg" border={"1px"}>
         {doneTodos.map((todo: ITodo) => (
           <Box
             key={todo._id}
@@ -54,7 +54,7 @@ const TodoneList = () => {
           </Box>
         ))}
       </SimpleGrid>
-    </>
+    </Box>
   );
 };
 

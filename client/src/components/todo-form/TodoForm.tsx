@@ -63,29 +63,26 @@ const TodoForm = () => {
   };
 
   return (
-    <Box textAlign={"center"} mt={5}>
-      <Box
-        maxWidth={"70%"}
-        mt={10}
-        mx={"auto"}
-        p={"20px"}
-        border={"1px solid white"}
-      >
-        <form onSubmit={submitHandler}>
-          <FormControl isRequired>
-            <FormLabel>Label</FormLabel>
-            <Input type="text" ref={labelRef} />
-          </FormControl>
-          <FormControl isRequired>
-            <FormLabel>Description</FormLabel>
-            <Input type="text" ref={descRef} />
-          </FormControl>
-          <Button type="submit" mt={2}>
-            Add Task
-          </Button>
-        </form>
+    <>
+      <Box textAlign={"center"}>
+        <Heading>Todo-Form</Heading>
+        <Box maxWidth={"70%"} mx={"auto"} p={"10px"} border={"1px solid black"}>
+          <form onSubmit={submitHandler}>
+            <FormControl isRequired>
+              <FormLabel>Label</FormLabel>
+              <Input type="text" ref={labelRef} />
+            </FormControl>
+            <FormControl isRequired>
+              <FormLabel>Description</FormLabel>
+              <Input type="text" ref={descRef} />
+            </FormControl>
+            <Button type="submit" mt={2}>
+              Add Task
+            </Button>
+          </form>
+        </Box>
       </Box>
-    </Box>
+    </>
   );
 };
 
