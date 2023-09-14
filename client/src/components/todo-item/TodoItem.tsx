@@ -1,31 +1,87 @@
-import { Button, Checkbox, IconButton, Stack, Text } from "@chakra-ui/react";
+import {
+  Button,
+  Checkbox,
+  FormControl,
+  FormLabel,
+  IconButton,
+  Input,
+  Modal,
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalHeader,
+  ModalOverlay,
+  Stack,
+  Text,
+  useDisclosure,
+  useToast,
+} from "@chakra-ui/react";
 import axios from "axios";
-import React, { useContext, useState } from "react";
+import React, { FormEvent, useContext, useRef, useState } from "react";
 import { FaTrash } from "react-icons/fa";
 import TodosContext from "../../Context/todos.context";
 import { ITodo } from "../../interfaces";
-import EditModal from "../Modal/EditModal";
 
 const TodoItem: React.FC<{
   todo: ITodo;
   deleteTodo: (id: string) => void;
 }> = ({ todo, deleteTodo }) => {
   const { dispatch } = useContext(TodosContext);
+  const toast = useToast();
   const [isChecked, setIsChecked] = useState<boolean>(todo.status);
-  const [isEdit, setIsEdit] = useState<boolean>(false);
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const labelRef = useRef<HTMLInputElement>(null);
+  const descRef = useRef<HTMLInputElement>(null);
 
-  const checkTodo = (id: string) => {
+  interface IsTodo {
+    label: string;
+    description: string;
+  }
+
+  const checkTodo = () => {
     axios
-      .patch(`http://localhost:4000/todos/${id}`)
+      .patch(`http://localhost:4000/todos/${todo._id}`)
       .then(() => {
-        dispatch({ type: "checkedTodo", id: id });
+        dispatch({ type: "checkedTodo", id: todo._id });
       })
       .catch((err) => console.log(err));
   };
 
-  const handleCheckboxChange = (id: string) => {
+  const updateTodo = (data: IsTodo) => {
+    axios
+      .put(`http://localhost:4000/todos/${todo._id}`, data)
+      .then(() => {
+        onClose();
+        dispatch({ type: "updateTodo", id: todo._id, todoItem: data });
+        toast({
+          title: "Todo Task Updated",
+          status: "success",
+          duration: 3000,
+          isClosable: true,
+          position: "bottom",
+        });
+      })
+      .catch((err) => console.log(err));
+  };
+
+  const handleCheckboxChange = () => {
     setIsChecked(!isChecked);
-    checkTodo(id);
+    checkTodo();
+  };
+
+  const submitHandler = (e: FormEvent) => {
+    e.preventDefault();
+    const labelValue = labelRef.current?.value;
+    const descValue = descRef.current?.value;
+
+    if (labelValue && descValue) {
+      const newTodo = {
+        label: labelValue,
+        description: descValue,
+      };
+
+      updateTodo(newTodo);
+    }
   };
 
   return (
@@ -49,16 +105,37 @@ const TodoItem: React.FC<{
           {todo.description}
         </Text>
       </Stack>
-      {isEdit ? (
-        <EditModal />
-      ) : (
-        <Button onClick={() => setIsEdit(!isEdit)}>Edit</Button>
-      )}
+
+      <Modal isOpen={isOpen} onClose={onClose}>
+        <ModalOverlay />
+
+        <ModalContent>
+          <ModalHeader>Edit Todo</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            <form onSubmit={submitHandler}>
+              <FormControl isRequired>
+                <FormLabel>Label</FormLabel>
+                <Input type="text" ref={labelRef} />
+              </FormControl>
+              <FormControl isRequired>
+                <FormLabel>Description</FormLabel>
+                <Input type="text" ref={descRef} />
+              </FormControl>
+              <Button type="submit" mt={2}>
+                Update
+              </Button>
+            </form>
+          </ModalBody>
+        </ModalContent>
+      </Modal>
+
+      <Button onClick={onOpen}>Edit</Button>
 
       <Checkbox
         size={"lg"}
         isChecked={isChecked}
-        onChange={() => handleCheckboxChange(todo._id)}
+        onChange={handleCheckboxChange}
         colorScheme="green"
       >
         <Text fontSize={"lg"} fontFamily={"cursive"}>

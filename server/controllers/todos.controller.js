@@ -36,12 +36,12 @@ const addTodo = async (req, res) => {
 
 const updateTodoById = async (req, res) => {
   try {
-    const { title, description } = req.body;
+    const { label, description } = req.body;
     const todoItem = await TodoModel.findById(req.params.id);
     if (!todoItem) {
       return res.status(404).json({ error: "Todo not found." });
     }
-    todoItem.title = title;
+    todoItem.label = label;
     todoItem.description = description;
     const savedItem = await todoItem.save();
     res.json(savedItem);

@@ -1,5 +1,8 @@
 import { ITodo } from "../interfaces";
-
+interface IsTodo {
+  label: string;
+  description: string;
+}
 interface AddTodo {
   type: "addTodo";
   todoItem: ITodo;
@@ -20,7 +23,18 @@ interface CheckedTodo {
   id: string;
 }
 
-export type TodoAction = AddTodo | SetTodos | DelTodo | CheckedTodo;
+interface UpdateTodo {
+  type: "updateTodo";
+  id: string;
+  todoItem: IsTodo;
+}
+
+export type TodoAction =
+  | AddTodo
+  | SetTodos
+  | DelTodo
+  | CheckedTodo
+  | UpdateTodo;
 
 const todoReducer = (state: ITodo[], action: TodoAction) => {
   switch (action.type) {
@@ -34,6 +48,11 @@ const todoReducer = (state: ITodo[], action: TodoAction) => {
     case "checkedTodo":
       return state.map((todo) => {
         if (todo._id === action.id) return { ...todo, status: !todo.status };
+        return todo;
+      });
+    case "updateTodo":
+      return state.map((todo) => {
+        if (todo._id === action.id) return { ...todo, ...action.todoItem };
         return todo;
       });
     default:
