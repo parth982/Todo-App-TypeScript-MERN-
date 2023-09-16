@@ -36,19 +36,20 @@ const TodoneList = () => {
   const doneTodos = todos.filter((todo) => todo.status === true);
 
   return (
-    <Box my={10}>
-      <Heading textAlign="center" mb={4} fontSize="3xl">
+    <Box my={10} textAlign="center">
+      <Heading mb={4} fontSize="3xl" color="teal.500">
         Done Task Lists
       </Heading>
-      <SimpleGrid columns={1} spacing={4} mx="auto" maxW="lg" border={"1px"}>
+      <SimpleGrid columns={1} spacing={4} mx="auto" maxW="lg">
         {doneTodos.map((todo: ITodo) => (
           <Box
             key={todo._id}
             p={4}
             borderRadius="md"
             borderWidth="1px"
-            borderColor="gray.300"
+            borderColor="teal.300"
             boxShadow="md"
+            bg="white"
           >
             <TodoItem todo={todo} deleteTodo={deleteTodo} />
           </Box>

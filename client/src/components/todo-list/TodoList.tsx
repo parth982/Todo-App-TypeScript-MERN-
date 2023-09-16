@@ -35,17 +35,20 @@ const TodoList = () => {
   const remTodos = todos.filter((todo) => todo.status === false);
 
   return (
-    <Box mt={10}>
-      <Heading textAlign={"center"}>Task Lists</Heading>
-      <SimpleGrid columns={1} spacing={4} mx="auto" maxW="lg" border={"1px"}>
+    <Box my={10} textAlign="center">
+      <Heading fontSize="3xl" mb={4} color="red.600">
+        Task Lists
+      </Heading>
+      <SimpleGrid columns={1} spacing={4} mx="auto" maxW="lg">
         {remTodos.map((todo: ITodo) => (
           <Box
             key={todo._id}
             p={4}
             borderRadius="md"
-            borderWidth="1px"
-            borderColor="gray.300"
+            borderWidth="2px"
+            borderColor="red.300"
             boxShadow="md"
+            bg="white"
           >
             <TodoItem todo={todo} deleteTodo={deleteTodo} />
           </Box>

@@ -11,21 +11,23 @@ import {
   ModalContent,
   ModalHeader,
   ModalOverlay,
-  Stack,
   Text,
   useDisclosure,
   useToast,
+  Flex, // Added Flex
 } from "@chakra-ui/react";
 import axios from "axios";
 import React, { FormEvent, useContext, useRef, useState } from "react";
-import { FaTrash } from "react-icons/fa";
+import { FaEdit, FaTrash } from "react-icons/fa";
 import TodosContext from "../../Context/todos.context";
 import { ITodo } from "../../interfaces";
 
 const TodoItem: React.FC<{
   todo: ITodo;
   deleteTodo: (id: string) => void;
-}> = ({ todo, deleteTodo }) => {
+  editButton?: boolean;
+  deleteButton?: boolean;
+}> = ({ todo, deleteTodo, editButton = true, deleteButton = true }) => {
   const { dispatch } = useContext(TodosContext);
   const toast = useToast();
   const [isChecked, setIsChecked] = useState<boolean>(todo.status);
@@ -85,72 +87,97 @@ const TodoItem: React.FC<{
   };
 
   return (
-    <Stack
+    <Flex
       p={4}
       borderRadius="md"
       borderWidth="1px"
-      borderColor="gray.200"
+      borderColor="gray.300"
       boxShadow="sm"
       bg="white"
-      spacing={1}
-      direction="row"
+      alignItems="flex-start"
       justifyContent="space-between"
-      alignItems="center"
     >
-      <Stack>
+      <div>
         <Text fontWeight="bold" fontSize="xl">
           {todo.label}
         </Text>
         <Text fontSize="lg" color="gray.600">
           {todo.description}
         </Text>
-      </Stack>
 
-      <Modal isOpen={isOpen} onClose={onClose}>
+        <Checkbox
+          size={"lg"}
+          isChecked={isChecked}
+          onChange={handleCheckboxChange}
+          colorScheme="green"
+          mt={2}
+        >
+          <Text fontSize={"lg"} fontFamily={"cursive"}>
+            Status
+          </Text>
+        </Checkbox>
+      </div>
+
+      <div>
+        {editButton && (
+          <Button
+            leftIcon={<FaEdit />}
+            colorScheme="teal"
+            variant="outline"
+            onClick={onOpen}
+          >
+            Edit
+          </Button>
+        )}
+
+        {deleteButton && (
+          <IconButton
+            colorScheme="red"
+            aria-label="Delete Todo"
+            icon={<FaTrash />}
+            onClick={() => deleteTodo(todo._id)}
+            size="sm"
+            ml={2}
+          />
+        )}
+      </div>
+
+      <Modal isOpen={isOpen} onClose={onClose} size="md">
         <ModalOverlay />
-
-        <ModalContent>
+        <ModalContent borderRadius="md" boxShadow="lg">
           <ModalHeader>Edit Todo</ModalHeader>
           <ModalCloseButton />
+
           <ModalBody>
             <form onSubmit={submitHandler}>
               <FormControl isRequired>
                 <FormLabel>Label</FormLabel>
-                <Input type="text" ref={labelRef} />
+                <Input type="text" ref={labelRef} defaultValue={todo.label} />
               </FormControl>
-              <FormControl isRequired>
+
+              <FormControl isRequired mt={4}>
                 <FormLabel>Description</FormLabel>
-                <Input type="text" ref={descRef} />
+                <Input
+                  type="text"
+                  ref={descRef}
+                  defaultValue={todo.description}
+                />
               </FormControl>
-              <Button type="submit" mt={2}>
+
+              <Button
+                type="submit"
+                mt={4}
+                colorScheme="teal"
+                size="sm"
+                float="right"
+              >
                 Update
               </Button>
             </form>
           </ModalBody>
         </ModalContent>
       </Modal>
-
-      <Button onClick={onOpen}>Edit</Button>
-
-      <Checkbox
-        size={"lg"}
-        isChecked={isChecked}
-        onChange={handleCheckboxChange}
-        colorScheme="green"
-      >
-        <Text fontSize={"lg"} fontFamily={"cursive"}>
-          Status
-        </Text>
-      </Checkbox>
-
-      <IconButton
-        colorScheme="red"
-        aria-label="Delete Todo"
-        icon={<FaTrash />}
-        onClick={() => deleteTodo(todo._id)}
-        size="md"
-      />
-    </Stack>
+    </Flex>
   );
 };
 
